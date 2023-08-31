@@ -32,15 +32,17 @@ func TestServiceRegistry(t *testing.T) {
 }
 ```
 
-> 启动服务
+1. 启动服务
 
-> 访问
+2. 访问
 
 curl  -POST -d '{"key":"upc","value":"127.0.0.1:8888"}' http://127.0.0.1:9999/mem/register
 
-> 查看注册中心日志
+3. 查看注册中心日志
 
+```text
 [registry] 2023-08-31 11:05:27 /Users/wendell/GolandProjects/shura/registry/mem.go:52 INFO register /upc &[{127.0.0.1:8888}]
+```
 
 ## 服务发现
 
@@ -54,22 +56,26 @@ curl  -POST -d '{"key":"upc"}' http://127.0.0.1:9999/mem/discover
 
 > 例如
 
+```shell
 curl  -POST -d '["upc"]' http://127.0.0.1:9999/mem/monitor         
 {"code":304}
+```
 
 > 有新的服务注册
 
+```go
 curl  -POST -d '["upc"]' http://127.0.0.1:9999/mem/monitor
 
 {"appName":"/upc","code":200,"data":[{"address":"127.0.0.1:8888"},{"address":"127.0.0.1:8889"}]}
 
-[registry] 2023-08-31 11:16:32 /Users/wendell/GolandProjects/shura/registry/mem.go:52 INFO register /upc &[{127.0.0.1:8888} {127.0.0.1:8889}] 
-
+[registry] 2023-08-31 11:16:32 /Users/wendell/GolandProjects/shura/registry/mem.go:52 INFO register /upc &[{127.0.0.1:8888} {127.0.0.1:8889}]
+```
 
 > 有服务下线
 
 手动关闭一个实例
 
+```shell
 curl  -POST -d '["upc"]' http://127.0.0.1:9999/mem/monitor
 
 {"appName":"/upc","code":200,"data":[{"address":"127.0.0.1:8888"}]}
@@ -79,3 +85,4 @@ curl  -POST -d '["upc"]' http://127.0.0.1:9999/mem/monitor
 curl  -POST -d '["upc"]' http://127.0.0.1:9999/mem/monitor
 
 {"appName":"/upc","code":200,"data":null}
+```
